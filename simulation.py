@@ -13,68 +13,45 @@ the exact geometric origin (0,0,0) with localized 4D spatial coupling.
 
 import numpy as np
 
+# Spatial Grid Setup
+grid_size = 100
+x = np.linspace(-2, 2, grid_size)
+y = np.linspace(-2, 2, grid_size)
+z = np.linspace(-2, 2, grid_size)
+X, Y, Z = np.meshgrid(x, y, z)
 
-def run_simulation():
-    # -------------------------------------------------------------------------
-    # 1. Spatial Grid Configuration
-    # -------------------------------------------------------------------------
-    grid_size = 50
-    x = np.linspace(-2.0, 2.0, grid_size)
-    y = np.linspace(-2.0, 2.0, grid_size)
-    z = np.linspace(-2.0, 2.0, grid_size)
-    X, Y, Z = np.meshgrid(x, y, z)
+# Physical & Renormalization Parameters
+# a_s: Effective s-wave scattering length induced at the origin
+# sigma: Regularization width for discrete numerical grid integration
+a_s = -0.15  
+sigma = 0.1  
+gamma = 8.5  # Integrated coupling strength over Gaussian envelope
 
-    # -------------------------------------------------------------------------
-    # 2. Potential Field Calculations
-    # -------------------------------------------------------------------------
-    # Baseline 3D Gaussian Potential Barrier
-    V_standard = 10.0 * np.exp(-(X**2 + Y**2 + Z**2))
+# Baseline 3D Potential Barrier
+r_sq = X**2 + Y**2 + Z**2
+V_standard = 10.0 * np.exp(-r_sq)
 
-    # 4D Gateway Coupling Constant at Origin (0,0,0)
-    gamma = 8.5
-    r_sq = X**2 + Y**2 + Z**2
-    gateway_coupling = gamma * np.exp(-r_sq / 0.01)
+# Regularized 4D Gateway Coupling centered at (0,0,0)
+# V_reg approximates the Bethe-Peierls boundary condition on a discrete grid
+gateway_coupling = gamma * (2 * np.pi * sigma**2)**(-1.5) * np.exp(-r_sq / (2 * sigma**2))
 
-    # Effective Potential Barrier incorporating origin coupling
-    V_gateway = np.maximum(V_standard - gateway_coupling, 0.0)
+def calculate_transmission(y_off, z_off):
+    x_line = np.linspace(-2, 2, grid_size)
+    r_line_sq = x_line**2 + y_off**2 + z_off**2
+    
+    V_base = 10.0 * np.exp(-r_line_sq)
+    V_delta_reg = gamma * (2 * np.pi * sigma**2)**(-1.5) * np.exp(-r_line_sq / (2 * sigma**2))
+    
+    # Effective Barrier path
+    V_path = np.maximum(V_base - V_delta_reg, 0)
+    
+    dx = x_line[1] - x_line[0]
+    integral = np.sum(np.sqrt(V_path)) * dx
+    return np.exp(-2 * integral)
 
-    # -------------------------------------------------------------------------
-    # 3. Transmission Probability Function (WKB Approximation Model)
-    # -------------------------------------------------------------------------
-    def calculate_transmission(y_off, z_off):
-        """Calculates transmission along a 1D path parallel to the x-axis at offset (y_off, z_off)."""
-        x_line = np.linspace(-2.0, 2.0, grid_size)
-        r_line_sq = x_line**2 + y_off**2 + z_off**2
+T_offcenter = calculate_transmission(0.5, 0.5)
+T_origin = calculate_transmission(0.0, 0.0)
 
-        # Effective potential along trajectory
-        V_path = np.maximum(
-            10.0 * np.exp(-r_line_sq) - gamma * np.exp(-r_line_sq / 0.01), 0.0
-        )
-
-        dx = x_line[1] - x_line[0]
-        integral = np.sum(np.sqrt(V_path)) * dx
-        return np.exp(-2.0 * integral)
-
-    # -------------------------------------------------------------------------
-    # 4. Trajectory Evaluation
-    # -------------------------------------------------------------------------
-    T_offcenter = calculate_transmission(0.5, 0.5)
-    T_origin = calculate_transmission(0.0, 0.0)
-    boost_factor = T_origin / T_offcenter
-
-    # -------------------------------------------------------------------------
-    # 5. Output Results
-    # -------------------------------------------------------------------------
-    print("==================================================")
-    print(" Origin-Point 4D Transit: Numerical Simulation ")
-    print(" Author: Mohammed Serraj")
-    print(" DOI: 10.5281/zenodo.22140243")
-    print("==================================================")
-    print(f"Off-Center Trajectory (y=0.5, z=0.5) Transmission : {T_offcenter:.6e}")
-    print(f"Origin Trajectory     (y=0.0, z=0.0) Transmission : {T_origin:.6e}")
-    print(f"Gateway Boost Factor                              : {boost_factor:.2f}x")
-    print("==================================================")
-
-
-if __name__ == "__main__":
-    run_simulation()
+print(f"Off-Center Transmission: {T_offcenter:.6e}")
+print(f"Origin (0,0,0) Transmission: {T_origin:.6e}")
+print(f"Gateway Boost Factor: {T_origin / T_offcenter:.2f}x")

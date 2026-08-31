@@ -1,38 +1,50 @@
-"""
-Origin-Point 4D Transit: Numerical Convergence Test
-Author: Mohammed Serraj
-DOI: 10.5281/zenodo.22214878
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
 
-Verifies that the Gateway Boost Factor reaches a stable asymptote as 
-the grid cutoff parameter (sigma) approaches zero under Bethe-Peierls regularization.
-"""
+\title{\textbf{Origin-Point 4D Transit: A Symmetrical Gateway Hypothesis (v3)}}
+\author{\textbf{Mohammed Serraj}}
+\date{\today}
 
-import numpy as np
+\begin{document}
 
-def run_simulation(grid_size, sigma, a_s=-0.15, gamma=8.5):
-    x = np.linspace(-2, 2, grid_size)
-    dx = x[1] - x[0]
-    
-    def calculate_transmission(y_off, z_off):
-        r_line_sq = x**2 + y_off**2 + z_off**2
-        V_base = 10.0 * np.exp(-r_line_sq)
-        V_delta_reg = gamma * (2 * np.pi * sigma**2)**(-1.5) * np.exp(-r_line_sq / (2 * sigma**2))
-        V_path = np.maximum(V_base - V_delta_reg, 0)
-        
-        integral = np.sum(np.sqrt(V_path)) * dx
-        return np.exp(-2 * integral)
+\maketitle
 
-    T_off = calculate_transmission(0.5, 0.5)
-    T_orig = calculate_transmission(0.0, 0.0)
-    return T_orig / T_off
+\begin{abstract}
+We evaluate quantum tunneling transmission probabilities across a 3D potential barrier with a localized 4D spatial interaction constrained to the origin $(0,0,0)$. Using Bethe-Peierls boundary conditions, we regularize zero-range interactions to ensure grid-scale independence.
+\end{abstract}
 
-sigmas = [0.15, 0.10, 0.08, 0.05, 0.03]
-grid_size = 150
+\section{Introduction}
+The hypothesis posits a spatial intersection of a higher-dimensional coordinate $w$ at the zero-dimensional origin point $(0,0,0)$ in 3D Euclidean space.
 
-print("--- Convergence Test Results ---")
-print(f"{'Sigma (Spatial Cutoff)':<25} | {'Gateway Boost Factor':<20}")
-print("-" * 50)
+\section{Renormalization Group (RG) Flow \& Grid Invariance}
+To ensure the physical validity of the origin coupling, the bare coupling constant $g(\sigma)$ must be renormalized as the spatial grid resolution parameter $\sigma \to 0$. We express the regularized potential $V_{\text{reg}}(\mathbf{r})$ using a normalized Gaussian envelope:
 
-for s in sigmas:
-    boost = run_simulation(grid_size=grid_size, sigma=s)
-    print(f"{s:<25.3f} | {boost:<20.2f}x")
+\begin{equation}
+V_{\text{reg}}(\mathbf{r}) = -g(\sigma) \left(2\pi \sigma^2\right)^{-3/2} \exp\left(-\frac{r^2}{2\sigma^2}\right)
+\end{equation}
+
+Matching $V_{\text{reg}}(\mathbf{r})$ to the low-energy s-wave scattering amplitude determined by the Bethe-Peierls boundary condition $\psi(r) \sim C(1/r - 1/a_s)$ yields the explicit RG equation for the bare coupling:
+
+\begin{equation}
+\frac{1}{g(\sigma)} = \frac{m}{4\pi \hbar^2 a_s} + \frac{m}{4\pi \hbar^2 \sigma \sqrt{2\pi}}
+\end{equation}
+
+Solving for $g(\sigma)$ gives the continuous scaling relation:
+
+\begin{equation}
+g(\sigma) = \frac{4\pi \hbar^2}{m} \left( \frac{1}{a_s} - \frac{1}{\sigma \sqrt{2\pi}} \right)^{-1}
+\end{equation}
+
+As $\sigma \to 0$, $g(\sigma)$ naturally flows to absorb the $1/\sigma$ divergence, holding the physical s-wave scattering length $a_s$ constant and rendering observable transmission probabilities invariant under grid refinement.
+
+\section{Code Availability \& Identifiers}
+\begin{itemize}
+    \item \textbf{Zenodo DOI:} \href{https://doi.org/10.5281/zenodo.22214878}{10.5281/zenodo.22214878}
+    \item \textbf{GitHub Repository:} \href{https://github.com/jsonHub255/0D-Gateway-Theory-Simulation}{jsonHub255/0D-Gateway-Theory-Simulation}
+\end{itemize}
+
+\end{document}

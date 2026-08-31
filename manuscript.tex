@@ -5,7 +5,7 @@
 \usepackage{geometry}
 \geometry{margin=1in}
 
-\title{\textbf{Origin-Point 4D Transit: A Symmetrical Gateway Hypothesis (v3)}}
+\title{\textbf{Origin-Point 4D Transit: A Symmetrical Gateway Hypothesis (v3.2)}}
 \author{\textbf{Mohammed Serraj}}
 \date{\today}
 
@@ -14,7 +14,7 @@
 \maketitle
 
 \begin{abstract}
-We evaluate quantum tunneling transmission probabilities across a 3D potential barrier with a localized 4D spatial interaction constrained to the origin $(0,0,0)$. Using Bethe-Peierls boundary conditions, we regularize zero-range interactions to ensure grid-scale independence.
+We evaluate quantum tunneling transmission probabilities across a 3D potential barrier with a localized 4D spatial interaction constrained to the origin $(0,0,0)$. Using Bethe-Peierls boundary conditions, we regularize zero-range interactions to ensure grid-scale independence and derive the metric projection of the 4D coordinate onto the 3D Euclidean hypersurface.
 \end{abstract}
 
 \section{Introduction}
@@ -40,6 +40,43 @@ g(\sigma) = \frac{4\pi \hbar^2}{m} \left( \frac{1}{a_s} - \frac{1}{\sigma \sqrt{
 \end{equation}
 
 As $\sigma \to 0$, $g(\sigma)$ naturally flows to absorb the $1/\sigma$ divergence, holding the physical s-wave scattering length $a_s$ constant and rendering observable transmission probabilities invariant under grid refinement.
+
+\section{4D-to-3D Metric Tensor Projection}
+To provide a geometric origin for the localized boundary term, we evaluate the dimensional reduction of a 4D metric tensor $g_{MN}$ onto a 3D Euclidean hypersurface $\Sigma_3$ at $w=0$. 
+
+We define the line element of the 4D bulk space using an origin-localized warp factor $\Phi(r)$:
+
+\begin{equation}
+ds^2 = g_{MN} dX^M dX^N = g_{\mu\nu}(x) dx^\mu dx^\nu + e^{2\Phi(r)} dw^2
+\end{equation}
+
+where $X^M = (x^\mu, w)$ with $\mu \in \{1, 2, 3\}$, $r = \sqrt{\sum (x^\mu)^2}$, and $w$ represents the fourth spatial dimension.
+
+\subsection{Hypersurface Projection \& Extrinsic Curvature}
+The induced metric $h_{\mu\nu}$ on the 3D hypersurface $w = 0$ is obtained via the projection tensor $P^{\,M}_{\mu} = \frac{\partial X^M}{\partial x^\mu}$:
+
+\begin{equation}
+h_{\mu\nu} = g_{MN} P^{\,M}_{\mu} P^{\,N}_{\nu} = g_{\mu\nu}
+\end{equation}
+
+The unit normal vector to the $w=0$ hypersurface is given by $n^M = (0, 0, 0, e^{-\Phi(r)})$. The extrinsic curvature tensor $K_{\mu\nu}$ measuring the geometric bending of the 3D space into the 4D bulk takes the form:
+
+\begin{equation}
+K_{\mu\nu} = \frac{1}{2} \mathcal{L}_n h_{\mu\nu} = \frac{1}{2} e^{-\Phi(r)} \frac{\partial g_{\mu\nu}}{\partial w}
+\end{equation}
+
+\subsection{Zero-Point Singular Limit}
+Assuming a Gaussian warp profile $\Phi(r) = -\frac{r^2}{2\sigma^2}$, the trace of the extrinsic curvature $K = h^{\mu\nu} K_{\mu\nu}$ concentrates strictly at the origin $r \to 0$:
+
+\begin{equation}
+\lim_{\sigma \to 0} K(r) \propto \delta^3(\mathbf{r})
+\end{equation}
+
+This curvature singularity produces an effective delta-like potential well in the 3D effective Hamiltonian, which matches the regularized s-wave scattering length $a_s$ derived under the Bethe-Peierls boundary conditions:
+
+\begin{equation}
+\psi(r) \sim C \left( \frac{1}{r} - \frac{1}{a_s} \right) \quad \text{as } r \to 0
+\end{equation}
 
 \section{Code Availability \& Identifiers}
 \begin{itemize}

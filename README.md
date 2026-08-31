@@ -1,26 +1,31 @@
-# 0D Gateway Theory: Origin-Point 4D Transit (v3)
+# Origin-Point 4D Transit: A Symmetrical Gateway Hypothesis (v3.2)
 
-This repository contains the numerical simulation code and mathematical framework for the preprint:
-**"Origin-Point 4D Transit: A Symmetrical Gateway Hypothesis"** (v3).
+**Author:** Mohammed Serraj  
+**DOI:** [10.5281/zenodo.22214878](https://doi.org/10.5281/zenodo.22214878)  
+**Repository:** [jsonHub255/0D-Gateway-Theory-Simulation](https://github.com/jsonHub255/0D-Gateway-Theory-Simulation)  
+**Interactive 3D Visualizer:** [jsonHub255.github.io/0D-Gateway-Theory-Simulation](https://jsonHub255.github.io/0D-Gateway-Theory-Simulation/)
+
+---
 
 ## Overview
-The paper hypothesizes a 4D spatial coupling constrained exclusively to the 3D origin $(0,0,0)$. To avoid non-physical divergences associated with a bare 3D Dirac delta potential, the origin interaction is modeled via a self-adjoint extension defined by the Bethe-Peierls boundary condition:
 
-$$\lim_{r \to 0} \frac{1}{\chi(r)} \frac{d\chi(r)}{dr} = -\frac{1}{a_s}$$
+This repository contains the numerical simulations, mathematical derivations, and LaTeX source code for a theoretical model evaluating 4D-to-3D spatial intersections. The hypothesis evaluates quantum tunneling transmission probabilities across a 3D potential barrier featuring a localized 4D interaction constrained strictly to the origin $(0,0,0)$.
 
-Where $a_s$ represents the physical s-wave scattering length capturing the 4D gateway coupling strength.
+The Version 3.2 theoretical framework incorporates:
+* **Bethe-Peierls Boundary Conditions:** Regularizes zero-range delta interaction terms $\psi(r) \sim C(1/r - 1/a_s)$ as $r \to 0$ to eliminate non-physical divergences.
+* **Renormalization Group (RG) Scaling:** Decouples the Gaussian spatial cutoff parameter ($\sigma$) from the physical s-wave scattering length ($a_s$), proving grid-scale invariance.
+* **4D-to-3D Metric Projection:** Derives the dimensional reduction of a 4D bulk metric $g_{MN}$ onto a 3D hypersurface $\Sigma_3$ using extrinsic curvature tensors.
 
-### Version 3 Update
-- **Parameter Decoupling:** Decouples the Gaussian spatial grid envelope parameter ($\sigma$) from the physical s-wave scattering length ($a_s$) to prevent grid-scale dependence.
-- **Discrete Grid Regularization:** Implements explicit regularization for the zero-range Bethe-Peierls boundary condition on a 3D spatial grid.
+---
 
-## Simulation
-`simulation.py` models transmission probabilities across a potential barrier using a regularized Gaussian cutoff to represent zero-range interactions on a discrete spatial grid.
+## Repository Structure
 
-### Prerequisites
-- Python 3.x
-- NumPy
-
-### Usage
-```bash
-python simulation.py
+```text
+.
+├── manuscript.tex          # Complete LaTeX source manuscript (v3.2)
+├── simulation.py          # Primary WKB numerical integration script
+├── convergence_test.py    # Numerical grid refinement verifier
+├── plot_convergence.py    # Plotting module producing convergence_plot.png
+├── convergence_plot.png   # Generated figure showing boost factor invariance
+├── index.html             # Three.js interactive 3D spatial visualizer
+└── README.md              # Project documentation and execution guide
